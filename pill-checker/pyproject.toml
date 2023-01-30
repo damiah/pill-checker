@@ -16,6 +16,8 @@ scikit-learn = "^1.2.0"
 pandas = "^1.5.3"
 beautifulsoup4 = "^4.11.1"
 python-multipart = "^0.0.5"
+pillow = "^9.4.0"
+sentence-transformers = "^2.2.2"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,55 +1,60 @@
 #import CLIP transformers
 from sentence_transformers import SentenceTransformer, util
 
+from core.config import CROPPED_PILL_PATH, MODEL_PATH
+import glob
+from PIL import Image
+import os
+import pickle
+from loguru import logger
+import torch
 
 
 def load_sentence_model():
     # # Load the OpenAI CLIP Model
-    model = SentenceTransformer('clip-ViT-B-32')
+    if os.path.exists(MODEL_PATH):
+        model = pickle.load(open(MODEL_PATH, 'rb'))
+    else:
+        message = "No model exists! Downloading..."
+        logger.error(message)
+        model = SentenceTransformer('clip-ViT-B-32')
+        pickle.dump(model, open(MODEL_PATH, 'wb'))
+
     return model
 
-# Next we compute the embeddings
-# To encode an image, you can use the following code:
-# from PIL import Image
-# encoded_image = model.encode(Image.open(filepath))
-image_names = image_path_list_cropped
-print("Images:", len(image_names))
-encoded_image = model.encode([Image.open(filepath) for filepath in image_names],
-                             batch_size=128, convert_to_tensor=True, show_progress_bar=True)
+# Next we encode each image
+def encode_images(model):
+    '''encodes the stored images'''
 
-# Now we run the clustering algorithm. This function compares images aganist 
-# all other images and returns a list with the pairs that have the highest 
-# cosine similarity score
-processed_images = util.paraphrase_mining_embeddings(encoded_image)
-NUM_SIMILAR_IMAGES = 10 
+    image_names = glob.glob(f'{CROPPED_PILL_PATH}*.png')
+    encoded_images = model.encode([Image.open(filepath) for filepath in image_names],
+                                    batch_size=128, convert_to_tensor=True)
+    return (encoded_images, image_names)
 
-# =================
-# DUPLICATES
-# =================
-print('Finding duplicate images...')
-# Filter list for duplicates. Results are triplets (score, image_id1, image_id2) and is scorted in decreasing order
-# A duplicate image will have a score of 1.00
-# It may be 0.9999 due to lossy image compression (.jpg)
-duplicates = [image for image in processed_images if image[0] >= 0.999]
+def run_clustering_model(encoded_images):
+    
+    processed_images = util.paraphrase_mining_embeddings(encoded_images)
+    
+    return processed_images
 
-# Output the top X duplicate images
-for score, image_id1, image_id2 in duplicates[0:NUM_SIMILAR_IMAGES]:
-    print("\nScore: {:.3f}%".format(score * 100))
-    print(image_names[image_id1])
-    print(image_names[image_id2])
+def find_closest_pills(model, uploaded_image_path):
+    
+    #add new image to existing encoded images
+    encoded_images, image_names = encode_images(model)
+    encoded_uploaded_image = model.encode(Image.open(uploaded_image_path), batch_size=128, convert_to_tensor=True)
+    encoded_images = torch.vstack((encoded_images, encoded_uploaded_image))
+    uploaded_idx = len(encoded_images) - 1
+    image_names.append(uploaded_image_path)
 
-# =================
-# NEAR DUPLICATES
-# =================
-print('Finding near duplicate images...')
-# Use a threshold parameter to identify two images as similar. By setting the threshold lower, 
-# you will get larger clusters which have less similar images in it. Threshold 0 - 1.00
-# A threshold of 1.00 means the two images are exactly the same. Since we are finding near 
-# duplicate images, we can set it at 0.99 or any number 0 < X < 1.00.
-threshold = 0.99
-near_duplicates = [image for image in processed_images if image[0] < threshold]
+    #run clustering model on all images including new
+    processed_images = run_clustering_model(encoded_images)
 
-for score, image_id1, image_id2 in near_duplicates[0:NUM_SIMILAR_IMAGES]:
-    print("\nScore: {:.3f}%".format(score * 100))
-    print(image_names[image_id1])
-    print(image_names[image_id2])
+    similar_images = []
+    for score, image_id1, image_id2 in processed_images:
+        if (image_id1 == uploaded_idx) or (image_id2 == uploaded_idx):
+            print("\nScore: {:.3f}%".format(score))
+            print(image_names[uploaded_idx])
+            image_match = [image_names[image_id2 if image_id1 == uploaded_idx else image_id1], score]
+            similar_images.append(image_match)
+    
+    return similar_images

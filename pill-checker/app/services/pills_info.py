@@ -4,6 +4,7 @@ from loguru import logger
 import pandas as pd
 import bs4
 import requests
+import glob
 
 from core.errors import PredictException, ModelLoadException
 from core.config import CROPPED_PILL_PATH, PILL_INFO, PILL_INFO_URL
@@ -55,3 +56,17 @@ def scrape_data():
     df.to_pickle(PILL_INFO)
 
     return df.head()
+
+
+def find_image_saved_names(img_name):
+    '''Using the name of the image from the saved pill_info.pkl file,
+    we can find the possible saved cropped image names'''
+
+    cropped_image_path_list = glob.glob(f"{CROPPED_PILL_PATH}*.png")
+    possible_image_path_names = [f'{CROPPED_PILL_PATH}{img_name.replace("/", "_") + "_" + str(i)}.png'
+                                             for i in range(1,5)]
+    possible_image_path_names.append(f'{CROPPED_PILL_PATH}{img_name.replace("/", "_")}.png')
+    
+    saved_image_names = list(set(possible_image_path_names) & set(cropped_image_path_list))
+
+    return saved_image_names
