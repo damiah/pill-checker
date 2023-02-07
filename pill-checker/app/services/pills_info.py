@@ -6,7 +6,6 @@ import bs4
 import requests
 import glob
 
-from core.errors import PredictException, ModelLoadException
 from core.config import CROPPED_PILL_PATH, PILL_INFO, PILL_INFO_URL
 
 def load_pill_data():

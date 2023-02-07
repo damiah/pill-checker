@@ -25,10 +25,6 @@ logging.basicConfig(
 )
 logger.configure(handlers=[{"sink": sys.stderr, "level": LOGGING_LEVEL}])
 
-# MODEL_PATH = config("MODEL_PATH", default="./ml/model/")
-MODEL_NAME = config("MODEL_NAME", default="model.pkl")
-INPUT_EXAMPLE = config("INPUT_EXAMPLE", default="./ml/model/examples/example.json")
-
 CROPPED_PILL_PATH = "./static/images/cropped/"
 UPLOADED_PILL_PATH = "./static/images/uploads/"
 PILL_INFO = "./static/pill_info/pill_info.pkl"

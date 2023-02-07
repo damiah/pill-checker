@@ -1,9 +1,8 @@
 from fastapi import APIRouter
 import uvicorn
-from api.routes import predictor, pills, upload
+from api.routes import pills, upload
 
 router = APIRouter()
-router.include_router(predictor.router, tags=["predictor"])
 router.include_router(pills.router)
 router.include_router(upload.router)
 

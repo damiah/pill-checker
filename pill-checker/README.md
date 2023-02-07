@@ -1,10 +1,62 @@
 # pill-checker
 
+
+```bash
+.
+├── Dockerfile
+├── Makefile
+├── README.md
+├── app
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── main.cpython-311.pyc
+│   │   └── main.cpython-39.pyc
+│   ├── api
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   └── routes
+│   ├── core
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   ├── config.py
+│   │   ├── errors.py
+│   │   ├── events.py
+│   │   ├── logging.py
+│   │   └── paginator.py
+│   ├── frontend
+│   │   ├── README.md
+│   │   ├── node_modules
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── public
+│   │   └── src
+│   ├── main.py
+│   ├── node_modules
+│   │   └── 15
+│   ├── package-lock.json
+│   ├── services
+│   │   ├── __pycache__
+│   │   ├── image_model.py
+│   │   ├── pills_info.py
+│   │   └── predict.py
+│   └── static
+│       ├── images
+│       ├── models
+│       └── pill_info
+├── docker-compose.yml
+├── notebooks
+│   └── scrape_data.ipynb
+├── poetry.lock
+├── pyproject.toml
+└── tests
+    ├── __init__.py
+    └── test_pagination_behavior.py```
+
 A short description of the project
 
 ## Development Requirements
 
-- Python3.11.0
+- Python3.9.0
 - Pip
 - Poetry (Python Package Manager)
 

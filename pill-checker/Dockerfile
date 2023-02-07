@@ -13,7 +13,6 @@ ARG DEV=false
 RUN if [ "$DEV" = "true" ] ; then poetry install --with dev ; else poetry install --only main ; fi
 
 COPY ./app/ ./
-COPY ./ml/model/ ./ml/model/
 
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
