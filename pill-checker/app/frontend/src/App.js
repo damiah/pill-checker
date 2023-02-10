@@ -5,19 +5,20 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        test: "sdfsd"
+      records: []
     };
   }
 
   componentDidMount() {
       fetch('api/')
           .then(response => response.json())
-          // .then(response => this.setState({'test': response.test}))
+          .then(records => this.setState({records: records}))
+          .catch(error => console.log(error))
   }
 
   render() {
-    // return <h1>Hey!  It's {this.state}</h1>;
-    return <h1>Hey!  It's </h1>;
+    return <h1>Hey!  It's {this.state}</h1>;
+    // return <h1>Hey!  It's mess </h1>;
   }
 
 }
