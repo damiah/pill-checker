@@ -54,7 +54,7 @@ def scrape_data():
     df = pd.DataFrame(res, columns=["Name", "Description", "Image"])
     df.to_pickle(PILL_INFO)
 
-    return df.head()
+    return df
 
 
 def find_image_saved_names(img_name):

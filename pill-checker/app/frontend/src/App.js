@@ -1,26 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from "react"
 
-class App extends React.Component {
+const App = () => {
+  const [users, setUsers] = useState([])
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      records: []
-    };
+  const fetchUserData = () => {
+    fetch("/pills")
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        setUsers(data)
+      })
   }
 
-  componentDidMount() {
-      fetch('api/')
-          .then(response => response.json())
-          .then(records => this.setState({records: records}))
-          .catch(error => console.log(error))
-  }
+  useEffect(() => {
+    fetchUserData()
+  }, [])
 
-  render() {
-    return <h1>Hey!  It's {this.state}</h1>;
-    // return <h1>Hey!  It's mess </h1>;
-  }
-
+  return (
+    <div>
+      {users.length > 0 && (
+        <ul>
+          {users.map(user => (
+            <li key={user}>{user}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }
 
 export default App;
