@@ -30,9 +30,9 @@ def upload(file: UploadFile = File(...)):
             <img src="{upload_path}" alt="Trulli" width="500" height="333">
             </body>
                 """
-    return FileResponse(upload_path) 
+    # return FileResponse(upload_path) 
     # HTMLResponse(content=content)
-    # return {"message": f"Successfully uploaded {file.filename} and {similar_images}"}
+    return {"message": f"Successfully uploaded {file.filename} and {similar_images}"}
 
 @router.get("/upload/")
 async def show_upload_file():

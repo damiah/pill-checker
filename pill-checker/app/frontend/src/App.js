@@ -1,31 +1,14 @@
 import React, { useEffect, useState } from "react"
+import { AllPills } from './components/allPills'
+import { PillUpload } from "./components/uploadPill";
+import {Link, Routes, Route, useNavigate} from 'react-router-dom';
 
 const App = () => {
-  const [users, setUsers] = useState([])
-
-  const fetchUserData = () => {
-    fetch("/pills")
-      .then(response => {
-        return response.json()
-      })
-      .then(data => {
-        setUsers(data)
-      })
-  }
-
-  useEffect(() => {
-    fetchUserData()
-  }, [])
 
   return (
-    <div>
-      {users.length > 0 && (
-        <ul>
-          {users.map(user => (
-            <li key={user}>{user}</li>
-          ))}
-        </ul>
-      )}
+    <div className="App">
+    <AllPills></AllPills>
+    <PillUpload></PillUpload>
     </div>
   );
 }
