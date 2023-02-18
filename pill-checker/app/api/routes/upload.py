@@ -2,6 +2,7 @@ from fastapi import APIRouter, File, UploadFile
 from fastapi.responses import HTMLResponse, FileResponse
 from services.image_model import load_sentence_model, find_closest_pills
 from core.config import UPLOADED_PILL_PATH
+import os
 
 router = APIRouter()
 
@@ -24,14 +25,10 @@ def upload(file: UploadFile = File(...)):
     file.file.close()
     model = load_sentence_model()
     similar_images = find_closest_pills(model, upload_path)
+    
+    #remove the file
+    os.remove(upload_path)
 
-    content = f"""
-            <body>
-            <img src="{upload_path}" alt="Trulli" width="500" height="333">
-            </body>
-                """
-    # return FileResponse(upload_path) 
-    # HTMLResponse(content=content)
     return {"message": f"Successfully uploaded {file.filename} and {similar_images}"}
 
 @router.get("/upload/")
